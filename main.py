@@ -1,6 +1,6 @@
 from environment import PacManEnv
 from reinforce import *
-
+from DQN import DQN
 
 def use_reinforce(env, n_episode, n_step, start_alpha, info_times = 20):
     print('Start REINFORCE with', n_episode, n_step, start_alpha, info_times)
@@ -48,11 +48,17 @@ def use_reinforce(env, n_episode, n_step, start_alpha, info_times = 20):
         theta2 = update_theta(theta2, alpha, states, actions, rewards)
 
 
+# env = PacManEnv('map1.txt', (4, 6), [(7,1)], [2])
 env = PacManEnv('map1.txt', (4, 6), [], [])
 # env = PacManEnv('map2.txt', (3, 3), [], [])
 
-n_episode = 500
-n_step = 20
-info_times = 20
-start_alpha = 0.01 / env.observation_dim
-use_reinforce(env, n_episode, n_step, start_alpha)
+dqn = DQN(env, 100)
+
+
+dqn.train( 0.99, 0.1, 100, 1, 10)
+
+# n_episode = 500
+# n_step = 20
+# info_times = 20
+# start_alpha = 0.01 / env.observation_dim
+# use_reinforce(env, n_episode, n_step, start_alpha)

@@ -33,6 +33,12 @@ class PacManEnv:
         self.ghost_positions = ghost_positions
         self.ghost_directions = ghost_directions
         self.observation_dim = self.map.shape[0]*self.map.shape[1] + len(ghost_positions)*2 + 2
+        if ghost_positions:
+            self.observation_shape = (self.map.shape[0], self.map.shape[1], len(ghost_positions)*2, 2)
+        else:
+            self.observation_shape = (self.map.shape[0], self.map.shape[1], 2)
+        self.action_size = 4
+
 
         # To be able to env.reset()
         self.init_map = self.map.copy()
