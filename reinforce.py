@@ -49,16 +49,13 @@ def update_theta(theta, alpha, states, actions, rewards):
 
 
 def update_alpha(start_alpha, i):
-    return start_alpha
+    return start_alpha /np.sqrt(1+i)
 
 
 def vectorize(observation):
-    ghost_positions = list(itertools.chain.from_iterable(observation[2]))
-    return list(observation[0].flatten()) + list(observation[1]) + ghost_positions
-
-
-def devectorize(state, map_shape):
-    map_ = np.array(state[:map_shape[0]*map_shape[1]]).reshape(map_shape)
-    ghosts = state[map_shape[0]*map_shape[1]:-2]
-    pac_man = state[-2:]
-    return map_, ghosts, pac_man
+    if len(observation) == 3:
+        ghost_positions = list(itertools.chain.from_iterable(observation[2]))
+        return list(observation[0].flatten()) + list(observation[1]) + ghost_positions
+    else:
+        ghost_positions = list(itertools.chain.from_iterable(observation[1]))
+        return list(observation[0]) + ghost_positions

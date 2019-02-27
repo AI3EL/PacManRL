@@ -9,7 +9,7 @@ VOID_COLOR = (255,255,255)
 SB_COLOR = (255,255,0)
 GHOST_COLOR = (255, 0, 0)
 PACMAN_COLOR = (0, 0, 255)
-MOVE_TIME = 100
+MOVE_TIME = 50
 
 
 # 0 = nothing, 1 = wall, 2 = small ball, 3 = big ball
@@ -27,18 +27,21 @@ class PacManEnv:
                 res[i] = list(map(int, list(f.readline())[:-1]))
             return res
 
-    def __init__(self, map_name, pac_position, ghost_positions, ghost_directions):
+    def __init__(self, map_name, pac_position, ghost_positions, ghost_directions, low_dim=False, time_out=None, death_cost=0):
         self.map = PacManEnv.load_map(map_name)
         self.pac_position = pac_position
         self.ghost_positions = ghost_positions
         self.ghost_directions = ghost_directions
-        self.observation_dim = self.map.shape[0]*self.map.shape[1] + len(ghost_positions)*2 + 2
-        if ghost_positions:
-            self.observation_shape = (self.map.shape[0], self.map.shape[1], len(ghost_positions)*2, 2)
-        else:
-            self.observation_shape = (self.map.shape[0], self.map.shape[1], 2)
-        self.action_size = 4
+        self.low_dim = low_dim
+        self.time = 0
+        self.time_out = time_out
+        self.death_cost = death_cost
 
+        if not low_dim:
+            self.observation_dim = self.map.shape[0]*self.map.shape[1] + len(ghost_positions)*2 + 2
+        else:
+            self.observation_dim = len(ghost_positions)*2 + 2
+        self.action_size = 4
 
         # To be able to env.reset()
         self.init_map = self.map.copy()
@@ -65,6 +68,18 @@ class PacManEnv:
         else:
             raise ValueError('Incorrect direction', direction)
 
+    def non_block_directions(self, pos):
+        res = []
+        if self.map[pos[0], (pos[1] - 1) % self.map.shape[1]] != 1:
+            res.append(0)
+        if self.map[(pos[0] + 1) % self.map.shape[0], pos[1]] != 1:
+            res.append(1)
+        if self.map[pos[0], (pos[1] + 1) % self.map.shape[1]] != 1:
+            res.append(2)
+        if self.map[(pos[0] - 1) % self.map.shape[0], pos[1]] != 1:
+            res.append(3)
+        return res
+
     # Just checks there is no wall
     def move_if_valid(self, pos, direction):
         next_position = self.move(pos, direction)
@@ -72,25 +87,34 @@ class PacManEnv:
             return next_position
         return pos
 
+    def get_observation(self):
+        if self.low_dim:
+            return self.pac_position, self.ghost_positions
+        else:
+            return self.map, self.pac_position, self.ghost_positions
+
     # Returns : observation, reward, done, info
     def step(self, action):
+        self.pac_position = self.move_if_valid(self.pac_position, action)
         reward = 0
 
-        self.pac_position = self.move_if_valid(self.pac_position, action)
+        if self.time >= self.time_out:
+            observation = self.get_observation()
+            return observation, reward, True, 'Failure'
 
         for i in range(len(self.ghost_positions)):
-            if random.random() < PacManEnv.ghost_change_freq:  # Decide to change direction of ghost
-                self.ghost_directions[i] = random.randint(0, 3)
+            self.ghost_directions[i] = random.sample(self.non_block_directions(self.ghost_positions[i]), 1)[0]
             self.ghost_positions[i] = self.move_if_valid(self.ghost_positions[i], self.ghost_directions[i])
             if self.ghost_positions[i] == self.pac_position:
-                observation = (self.map, self.pac_position, self.ghost_positions)
-                return observation, reward, True, 'Failure'
+                observation = self.get_observation()
+                return observation, self.death_cost, True, 'Failure'
 
         if self.map[self.pac_position] == 2:
             self.map[self.pac_position] = 0
             reward = 1
 
-        observation = (self.map, self.pac_position, self.ghost_positions)
+        self.time += 1
+        observation = self.get_observation()
         return observation, reward, False, ''
 
     def render(self):
@@ -120,5 +144,6 @@ class PacManEnv:
         self.pac_position = self.init_pac_position
         self.ghost_positions = self.init_ghost_positions.copy()
         self.ghost_directions = self.init_ghost_directions.copy()
-        observation = (self.map, self.pac_position, self.ghost_positions)
+        self.time = 0
+        observation = self.get_observation()
         return observation
