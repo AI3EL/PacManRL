@@ -2,6 +2,7 @@ from environment import PacManEnv
 from reinforce import *
 from DQN import DQN
 
+
 def use_reinforce(env, n_episode, n_step, start_alpha, info_times = 20):
     print('Start REINFORCE with', n_episode, n_step, start_alpha, info_times)
 
@@ -52,10 +53,9 @@ def use_reinforce(env, n_episode, n_step, start_alpha, info_times = 20):
 env = PacManEnv('map1.txt', (4, 6), [], [])
 # env = PacManEnv('map2.txt', (3, 3), [], [])
 
-dqn = DQN(env, 100)
-
-
-dqn.train( 0.99, 0.1, 100, 1, 10)
+dqn = DQN(env, 20)
+dqn.train(0.99, 0.2, 1000, 1, 50)
+dqn.observe()
 
 # n_episode = 500
 # n_step = 20

@@ -9,7 +9,7 @@ VOID_COLOR = (255,255,255)
 SB_COLOR = (255,255,0)
 GHOST_COLOR = (255, 0, 0)
 PACMAN_COLOR = (0, 0, 255)
-MOVE_TIME = 300
+MOVE_TIME = 100
 
 
 # 0 = nothing, 1 = wall, 2 = small ball, 3 = big ball
