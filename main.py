@@ -50,12 +50,15 @@ def use_reinforce(env, n_episode, n_step, start_alpha, info_times = 20):
 
 
 # env = PacManEnv('map1.txt', (4, 6), [(7,1)], [2])
-env = PacManEnv('map1.txt', (4, 6), [], [])
-# env = PacManEnv('map2.txt', (3, 3), [], [])
+# env = PacManEnv('map1.txt', (4, 6), [], [])
+env = PacManEnv('map2.txt', (3, 3), [], [])
 
-dqn = DQN(env, 20)
-dqn.train(0.99, 0.2, 1000, 1, 50)
-dqn.observe()
+dqn = DQN(env, 50)
+initial_q_table = dqn.get_q_table()
+dqn.train(0.99, 0.7, 1000, 1, 10, 10)
+for k, v in dqn.get_q_table().items():
+    print(k, initial_q_table[k] - v)
+# dqn.observe()
 
 # n_episode = 500
 # n_step = 20
