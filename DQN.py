@@ -70,13 +70,17 @@ class DQN:
         x_train = [to_array(batch[i][0]) for i in range(len(batch))]
         return x_train, y_train
 
+    def udpate_eps(self, eps_init, eps_final, t, T):
+        return eps_init * (1- t/T) + eps_final*(t/T)
+
     # max_t : max time alive before reseting the environement
-    def train(self, gamma, eps, T, mini_batch_size, C, max_t):
+    def train(self, gamma, eps_init, eps_final, T, mini_batch_size, C, max_t):
         print('Training DQN for T={0}, C={1}'.format(T, C))
         # last_q_table = self.get_q_table()
         self.cur_observation = self.env.reset()
         log_freq = 100
         average_loss = 0
+        eps = eps_init
         for t in range(T):
             if not t:
                 self.fill_D(eps, self.D_size, max_t)
@@ -86,14 +90,13 @@ class DQN:
 
             # y_train will contain the prediction of x_train except for one index so that the loss is as in the paper
             x_train, y_train = self.get_training_set(mini_batch, gamma)
-
             loss = self.QNN.train_on_batch(x_train, np.array(y_train))[0]
             average_loss += loss
 
             # Copy QNN weights to TNN's
             if t and not(t % C):
                 self.TNN.set_weights(self.QNN.get_weights())
-
+            eps = self.udpate_eps(eps_init, eps_final, t, T)
             # DEBUG
             if t % log_freq == 0:
                 print(t)

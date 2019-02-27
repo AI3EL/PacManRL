@@ -49,17 +49,18 @@ def use_reinforce(env, n_episode, n_step, start_alpha, info_times = 20):
         theta2 = update_theta(theta2, alpha, states, actions, rewards)
 
 
-env = PacManEnv('map1.txt', (4, 6), [(7,1)], [2], True, 100, 1)
+# env = PacManEnv('map1.txt', (4, 6), [(7,1)], [2], False, 100, 1)
 # env = PacManEnv('map1.txt', (4, 6), [], [], False)
-# env = PacManEnv('map2.txt', (3, 3), [], [], True, 10)
+env = PacManEnv('map2.txt', (3, 3), [], [], False, 10)
 # env = PacManEnv('map2.txt', (3, 3), [(1, 1)], [2], False, 20, 20)
 
 dqn = DQN(env, 50)
-dqn.train(0.99, 0.1, 10000, 1, 300, 100)
+dqn.train(0.99, 1., 0.1, 10000, 1, 300, 100)
+dqn.observe(5)
+
 # print("Final qtable : ")
 # for k,v in dqn.get_q_table().items():
 #     print(k,v)
-dqn.observe(5)
 
 # n_episode = 500
 # n_step = 20
