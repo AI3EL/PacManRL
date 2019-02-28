@@ -1,7 +1,16 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Feb 28 17:33:12 2019
+
+@author: jacqu
+"""
+
 import numpy as np
 import random
 import pygame
 from pygame.locals import *
+
+from env_utils import get_direction, ghost_threats
 
 WINDOW_SHAPE = 500, 500
 WALL_COLOR = (0, 0, 0)
@@ -11,6 +20,15 @@ GHOST_COLOR = (255, 0, 0)
 PACMAN_COLOR = (0, 0, 255)
 MOVE_TIME = 50
 
+# if setting state to "vector10", new and more simple state representation:
+# Observation is a vector of shape 10: 
+# First four features indicate presence of walls around
+# Fifth is direction of best target
+# Sixth to nineth indicate presence of ghost threat in direction 
+# last one indicates whether pacman is trapped (see paper for why it is important...)
+        
+    
+    
 
 # 0 = nothing, 1 = wall, 2 = small ball, 3 = big ball
 class PacManEnv:
@@ -27,20 +45,26 @@ class PacManEnv:
                 res[i] = list(map(int, list(f.readline())[:-1]))
             return res
 
-    def __init__(self, map_name, pac_position, ghost_positions, ghost_directions, low_dim=False, time_out=None, death_cost=0):
+    def __init__(self, map_name, pac_position, ghost_positions, ghost_directions, state="usual", time_out=None, death_cost=0):
+        """ parameter state replaces bool low_dim and specifies the state representation we choose. 
+        Is string type, and can be "usual", "low_dim" or "vector10". More can be added in the future"""
+        
         self.map = PacManEnv.load_map(map_name)
         self.pac_position = pac_position
         self.ghost_positions = ghost_positions
         self.ghost_directions = ghost_directions
-        self.low_dim = low_dim
+        self.state_rpz = state
         self.time = 0
         self.time_out = time_out
         self.death_cost = death_cost
-
-        if not low_dim:
+        
+        # Setting observation dimension: depends on which state representation we choose
+        if (state=="usual"):
             self.observation_dim = self.map.shape[0]*self.map.shape[1] + len(ghost_positions)*2 + 2
-        else:
+        elif (state=="low_dim"):
             self.observation_dim = len(ghost_positions)*2 + 2
+        elif(state=="vector10"):
+            self.observation_dim = 10
         self.action_size = 4
 
         # To be able to env.reset()
@@ -69,14 +93,15 @@ class PacManEnv:
             raise ValueError('Incorrect direction', direction)
 
     def non_block_directions(self, pos):
+        """0 is left, 1 is down, 2 is right, 3 is up"""
         res = []
-        if self.map[pos[0], (pos[1] - 1) % self.map.shape[1]] != 1:
+        if self.map[pos[0], (pos[1] - 1) % self.map.shape[1]] != 1: # left direction
             res.append(0)
-        if self.map[(pos[0] + 1) % self.map.shape[0], pos[1]] != 1:
+        if self.map[(pos[0] + 1) % self.map.shape[0], pos[1]] != 1: # down direction
             res.append(1)
-        if self.map[pos[0], (pos[1] + 1) % self.map.shape[1]] != 1:
+        if self.map[pos[0], (pos[1] + 1) % self.map.shape[1]] != 1: # right direction
             res.append(2)
-        if self.map[(pos[0] - 1) % self.map.shape[0], pos[1]] != 1:
+        if self.map[(pos[0] - 1) % self.map.shape[0], pos[1]] != 1: # up direction
             res.append(3)
         return res
 
@@ -88,10 +113,37 @@ class PacManEnv:
         return pos
 
     def get_observation(self):
-        if self.low_dim:
+        """ returns the observation, of dimension self.observation_dim"""
+        if (self.state_rpz=="low_dim"):
             return self.pac_position, self.ghost_positions
-        else:
+        
+        elif(self.state_rpz=="usual"):
             return self.map, self.pac_position, self.ghost_positions
+        
+        elif(self.state_rpz=="vector10"):
+            # build and return observation vector of length 10 
+            s=np.zeros(10)
+            # we give the information about non blocking directions 
+            non_blocking_dir=self.non_block_directions(self.pac_position)
+            for i in range(4):
+                if(i in non_blocking_dir):
+                    s[i]=1
+                    
+            # now we compute the direction of closest target 
+            best_direction=get_direction(self.map, self.pac_position, self.ghost_positions)
+            s[4]=best_direction
+            
+            # now we evaluate the presence of ghost threat in each direction (only ones with no wall...)
+            s[5:9]=ghost_threats(self.map, self.pac_position, self.ghost_positions, self.ghost_directions)
+            
+            # now we evaluate whether pac is blocked : this happens if all 4 directions are bad options. 
+            problems=np.concatenate((s[1:4],s[5:9]))
+            if(np.sum(problems)==4): # a problem (wall or threat) is detected in each direction 
+                s[9]=1
+                
+            # return the observation vector
+            return s
+            
 
     # Returns : observation, reward, done, info
     def step(self, action):
