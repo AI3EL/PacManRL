@@ -50,12 +50,3 @@ def update_theta(theta, alpha, states, actions, rewards):
 
 def update_alpha(start_alpha, i):
     return start_alpha /np.sqrt(1+i)
-
-
-def vectorize(observation):
-    if len(observation) == 3:
-        ghost_positions = list(itertools.chain.from_iterable(observation[2]))
-        return list(observation[0].flatten()) + list(observation[1]) + ghost_positions
-    else:
-        ghost_positions = list(itertools.chain.from_iterable(observation[1]))
-        return list(observation[0]) + ghost_positions

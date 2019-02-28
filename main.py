@@ -1,6 +1,7 @@
 from environment import PacManEnv
 from reinforce import *
 from DQN import DQN
+from utils import vectorize
 
 
 def use_reinforce(env, n_episode, n_step, start_alpha, info_times = 20):
@@ -49,13 +50,13 @@ def use_reinforce(env, n_episode, n_step, start_alpha, info_times = 20):
         theta2 = update_theta(theta2, alpha, states, actions, rewards)
 
 
-# env = PacManEnv('map1.txt', (4, 6), [(7,1)], [2], False, 100, 1)
-# env = PacManEnv('map1.txt', (4, 6), [], [], False)
-env = PacManEnv('map2.txt', (3, 3), [], [], False, 10)
+env = PacManEnv('map1.txt', (4, 6), [(7,1)], [2], False, 50)
+# env = PacManEnv('map1.txt', (4, 6), [], [], False, 50)
+# env = PacManEnv('map2.txt', (3, 3), [], [], False, 8)
 # env = PacManEnv('map2.txt', (3, 3), [(1, 1)], [2], False, 20, 20)
 
-dqn = DQN(env, 50)
-dqn.train(0.99, 1., 0.1, 10000, 1, 300, 100)
+dqn = DQN(env, 100)
+dqn.train(0.99, 1., 0.1, 10000, 16, 500, 50)
 dqn.observe(5)
 
 # print("Final qtable : ")

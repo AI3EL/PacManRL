@@ -9,7 +9,7 @@ VOID_COLOR = (255,255,255)
 SB_COLOR = (255,255,0)
 GHOST_COLOR = (255, 0, 0)
 PACMAN_COLOR = (0, 0, 255)
-MOVE_TIME = 50
+MOVE_TIME = 100
 
 
 # 0 = nothing, 1 = wall, 2 = small ball, 3 = big ball
@@ -98,13 +98,19 @@ class PacManEnv:
         self.pac_position = self.move_if_valid(self.pac_position, action)
         reward = 0
 
-        if self.time >= self.time_out:
-            observation = self.get_observation()
-            return observation, reward, True, 'Failure'
-
+        # Has to check before and after ghost position change
         for i in range(len(self.ghost_positions)):
-            self.ghost_directions[i] = random.sample(self.non_block_directions(self.ghost_positions[i]), 1)[0]
+            if self.ghost_positions[i] == self.pac_position:
+                observation = self.get_observation()
+                return observation, self.death_cost, True, 'Failure'
+
+            if self.ghost_positions[i] == (7,1):
+                self.ghost_directions[i] = 2
+            elif self.ghost_positions[i] == (7,7):
+                self.ghost_directions[i] = 0
+            # self.ghost_directions[i] = random.sample(self.non_block_directions(self.ghost_positions[i]), 1)[0]
             self.ghost_positions[i] = self.move_if_valid(self.ghost_positions[i], self.ghost_directions[i])
+
             if self.ghost_positions[i] == self.pac_position:
                 observation = self.get_observation()
                 return observation, self.death_cost, True, 'Failure'
@@ -113,9 +119,12 @@ class PacManEnv:
             self.map[self.pac_position] = 0
             reward = 1
 
-        self.time += 1
-        observation = self.get_observation()
-        return observation, reward, False, ''
+        if self.time >= self.time_out:
+            return self.get_observation(), reward, True, 'Failure'
+
+        else:
+            self.time += 1
+            return self.get_observation(), reward, False, ''
 
     def render(self):
         self.window.fill(VOID_COLOR)
@@ -145,5 +154,4 @@ class PacManEnv:
         self.ghost_positions = self.init_ghost_positions.copy()
         self.ghost_directions = self.init_ghost_directions.copy()
         self.time = 0
-        observation = self.get_observation()
-        return observation
+        return self.get_observation()
