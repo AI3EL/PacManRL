@@ -18,7 +18,7 @@ VOID_COLOR = (255,255,255)
 SB_COLOR = (255,255,0)
 GHOST_COLOR = (255, 0, 0)
 PACMAN_COLOR = (0, 0, 255)
-MOVE_TIME = 100
+MOVE_TIME = 150
 
 # if setting state to "vector10", new and more simple state representation:
 # Observation is a vector of shape 10:
