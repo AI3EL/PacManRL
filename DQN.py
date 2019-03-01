@@ -6,17 +6,11 @@ from keras.layers import Dense
 from utils import to_array
 import copy
 
-# TODO : vérifier si l'algo est bien implémenté
-# TODO : vérifier que ca marche avec les fantomes
-# TODO : printer des trucs / voir l'évolution du NN pour essayer de comprendre pourquoi ca marche pas
 
 # Parameters from paper:
 # batch_size : 32
 # D_size : 10^6
 # C : 10^4
-#
-
-
 class DQN:
     def __init__(self, env, buffer_size, neurons):
         self.env = env
@@ -60,7 +54,7 @@ class DQN:
         )
         return model
 
-    def get_mini_batch(self, size):
+    def get_batch(self, size):
         return [self.D.pop(random.randint(0, len(self.D)-1)) for i in range(size)]  # TODO : optimize
 
     def fill_D(self, n, max_t):
@@ -74,6 +68,7 @@ class DQN:
             next_observation, reward, done, info = self.env.step(action)
             self.cur_score += reward
             count += 1
+
             if done or self.time_alive >= max_t:
                 self.D.append((self.cur_observation, action, reward, None))
                 self.cur_observation = copy.deepcopy(self.env.reset())
@@ -84,19 +79,23 @@ class DQN:
             else:
                 self.D.append((self.cur_observation, action, reward, next_observation))
                 self.cur_observation = copy.deepcopy(next_observation)
+
             self.time_alive += 1
 
+    # Transform batch to get training set
     def get_training_set(self, batch, gamma):
         y_train = []
         for i in range(len(batch)):
-            tmp = self.QNN.predict(to_array([batch[i][0]]))[0]  # NOT optimal but simpler with keras
+            # TODO : not optimal but simpler with keras :
+            # TODO : just change one element of array tmp so that the error is on only one term of the resulting array
+            tmp = self.QNN.predict(to_array([batch[i][0]]))[0]
             if batch[i][3] is None:
                 tmp[batch[i][1]] = batch[i][2]
             else:
                 tmp[batch[i][1]] = batch[i][2] + gamma * max(self.TNN.predict(to_array([batch[i][3]]))[0])
             y_train.append(tmp)
         x_train = to_array([b[0] for b in batch])
-        return x_train, y_train
+        return np.array(x_train), np.array(y_train)
 
     # Linearly from eps_init to eps_final for t in [0, T/2], then constant to eps_final
     def udpate_eps(self, eps_init, eps_final, eps_prop, t, T):
@@ -106,7 +105,7 @@ class DQN:
         else:
             self.eps = eps_init * (1- t/Tf) + eps_final*(t/Tf)
 
-    # max_t : max time alive before resetting the environment
+    # Train for several epochs
     def train(self, eps_schedule, gamma, T, mini_batch_size, C, max_t, log_freq):
         logs = []
         epochs = len(eps_schedule)
@@ -117,6 +116,7 @@ class DQN:
             logs.append(self.train_epoch(gamma, eps_init, eps_final, eps_prop, T, mini_batch_size, C, max_t, log_freq))
         return logs
 
+    # Train for one epoch, max_t is the max duration of an episode
     def train_epoch(self, gamma, eps_init, eps_final, eps_prop, T, batch_size, C, max_t, log_freq):
         print('Training DQN for T={}, C={}, batch_size={}'.format(T, C, batch_size))
         # last_q_table = self.get_q_table()
@@ -129,13 +129,11 @@ class DQN:
                 self.fill_D(self.D_size, max_t)
             else:
                 self.fill_D(batch_size, max_t)
-            mini_batch = self.get_mini_batch(batch_size)
+            batch = self.get_batch(batch_size)
 
             # y_train will contain the prediction of x_train except for one index so that the loss is as in the paper
-            x_train, y_train = self.get_training_set(mini_batch, gamma)
-            y = np.array(y_train)
-            x = np.array(x_train)
-            loss = self.QNN.train_on_batch(x, y)[0]
+            x_train, y_train = self.get_training_set(batch, gamma)
+            loss = self.QNN.train_on_batch(x_train, y_train)[0]
             average_loss += loss
 
             # Copy QNN weights to TNN's
@@ -148,7 +146,7 @@ class DQN:
                 logs.append(self.log(t/T))
         return logs
 
-    # Observe the agent on one episode, performs a random action with proportion eps
+    # Observe the agent on 'rep' episodes, performs a random action with proportion eps
     def observe(self, rep=1, eps=0.1):
         for t in range(rep):
             observation = self.env.reset()
@@ -183,10 +181,3 @@ class DQN:
         self.n_episode_since_log = 0
         print()
         return self.average_score
-
-    def summary(self):
-        print('Summary of DQN')
-        np.set_printoptions(precision=2)
-        print('Log Map')
-        print(('Number of training episodes : ', self.n_train_episodes))
-        print(('Last average score : ', self.average_score))

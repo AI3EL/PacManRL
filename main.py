@@ -5,6 +5,7 @@ from utils import vectorize
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
+
 def use_reinforce(env, n_episode, n_step, start_alpha, info_times = 20):
     print('Start REINFORCE with', n_episode, n_step, start_alpha, info_times)
 
@@ -51,10 +52,11 @@ def use_reinforce(env, n_episode, n_step, start_alpha, info_times = 20):
         theta2 = update_theta(theta2, alpha, states, actions, rewards)
 
 
-def plot_logs(logs, log_freq):
+def plot_logs(logs):
     colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'chocolate', 'violet']
     legend = []
     for i in range(len(logs)):
+        log_freq = len(logs[i])
         absc = [1./log_freq * i for i in range(log_freq)]
         ords = logs[i]
         plt.plot(absc, ords, color=colors[i])
@@ -81,6 +83,7 @@ def save_logs_plot(logs, filename):
             n_files += 1
     plt.legend(handles=legend)
     plt.savefig(filename + '{}.png'.format(n_files))
+    plt.clf()
 
 
 env = PacManEnv('map1.txt', (4, 6), [(7, 1)], [2], "usual", 50)
@@ -96,16 +99,59 @@ save_logs_plot(logs, 'NN=128,T=10000,D=500,C=100,batch=16')
 dqn = DQN(env, 500, [128])
 eps_schedule = [(1., 0.1, 0.8)] + [(0.35, 0.1, 0.1)]*3
 logs = dqn.train(eps_schedule, 0.99, 10000, 16, 500, 50, 50)
-save_logs_plot(logs, 'NN=128,T=10000,D=500,C=100,batch=16')
+save_logs_plot(logs, 'NN=128,T=10000,D=500,C=500,batch=16')
 
 dqn = DQN(env, 500, [128])
 eps_schedule = [(1., 0.1, 0.8)] + [(0.35, 0.1, 0.1)]*3
 logs = dqn.train(eps_schedule, 0.99, 10000, 16, 1000, 50, 50)
-save_logs_plot(logs, 'NN=128,T=10000,D=500,C=100,batch=16')
+save_logs_plot(logs, 'NN=128,T=10000,D=500,C=1000,batch=16')
+
+dqn = DQN(env, 1000, [128])
+eps_schedule = [(1., 0.1, 0.8)] + [(0.35, 0.1, 0.1)]*3
+logs = dqn.train(eps_schedule, 0.99, 10000, 16, 500, 50, 50)
+save_logs_plot(logs, 'NN=128,T=10000,D=1000,C=500,batch=16')
+
+dqn = DQN(env, 100, [128])
+eps_schedule = [(1., 0.1, 0.8)] + [(0.35, 0.1, 0.1)]*3
+logs = dqn.train(eps_schedule, 0.99, 10000, 16, 500, 50, 50)
+save_logs_plot(logs, 'NN=128,T=10000,D=100,C=500,batch=16')
+
+dqn = DQN(env, 500, [32])
+eps_schedule = [(1., 0.1, 0.8)] + [(0.35, 0.1, 0.1)]*3
+logs = dqn.train(eps_schedule, 0.99, 10000, 16, 100, 50, 50)
+save_logs_plot(logs, 'NN=32,T=10000,D=500,C=100,batch=16')
+
+dqn = DQN(env, 500, [32,32])
+eps_schedule = [(1., 0.1, 0.8)] + [(0.35, 0.1, 0.1)]*3
+logs = dqn.train(eps_schedule, 0.99, 10000, 16, 100, 50, 50)
+save_logs_plot(logs, 'NN=32,32, T=10000,D=500,C=100,batch=16')
+
+dqn = DQN(env, 500, [128])
+eps_schedule = [(1., 0.1, 0.8)] + [(1.0, 0.1, 0.8)]*3
+logs = dqn.train(eps_schedule, 0.99, 10000, 16, 100, 50, 50)
+save_logs_plot(logs, 'NN=128,T=10000,D=500,C=100,batch=16, all schedules same')
+
+dqn = DQN(env, 500, [128])
+eps_schedule = [(1., 0.1, 0.8)] + [(1.0, 0.1, 0.1)]*3
+logs = dqn.train(eps_schedule, 0.99, 10000, 16, 100, 50, 50)
+save_logs_plot(logs, 'NN=128,T=10000,D=500,C=100,batch=16, schedule spike after 1.0 - 0.1 -0.1')
+
+dqn = DQN(env, 500, [128])
+eps_schedule = [(1., 0.1, 0.8)] + [(0.2, 0.1, 0.1)]*3
+logs = dqn.train(eps_schedule, 0.99, 10000, 16, 100, 50, 50)
+save_logs_plot(logs, 'NN=128,T=10000,D=500,C=100,batch=16, schedule spike after 0.2 - 0.1 -0.1')
+
+dqn = DQN(env, 500, [128])
+eps_schedule = [(1., 0.1, 0.8)] + [(0.4, 0.1, 0.1)]*3
+logs = dqn.train(eps_schedule, 0.99, 10000, 16, 100, 50, 50)
+save_logs_plot(logs, 'NN=128,T=10000,D=500,C=100,batch=16, schedule spike after 0.4 - 0.1 -0.1')
+
+dqn = DQN(env, 500, [128])
+eps_schedule = [(1., 0.1, 0.8)] + [(0.1, 0.1, 0.)]*3
+logs = dqn.train(eps_schedule, 0.99, 10000, 16, 100, 50, 50)
+save_logs_plot(logs, 'NN=128,T=10000,D=500,C=100,batch=16, schedule constant after 0.1')
 
 #dqn.observe(5)
-# dqn.summary()
-
 
 # print("Final qtable : ")
 # for k,v in dqn.get_q_table().items():

@@ -28,8 +28,6 @@ MOVE_TIME = 150
 # last one indicates whether pacman is trapped (see paper for why it is important...)
 
 
-
-
 # 0 = nothing, 1 = wall, 2 = small ball, 3 = big ball
 class PacManEnv:
     directions = ['left', 'down', 'right', 'up']
@@ -144,7 +142,6 @@ class PacManEnv:
             # return the observation vector
             return s
 
-
     # Returns : observation, reward, done, info
     def step(self, action):
         self.pac_position = self.move_if_valid(self.pac_position, action)
@@ -156,9 +153,10 @@ class PacManEnv:
                 observation = self.get_observation()
                 return observation, self.death_cost, True, 'Failure'
 
-            if self.ghost_positions[i] == (7,1):
+            # WARNING : special mode, ghost only goes up and down
+            if self.ghost_positions[i] == (7, 1):
                 self.ghost_directions[i] = 2
-            elif self.ghost_positions[i] == (7,7):
+            elif self.ghost_positions[i] == (7, 7):
                 self.ghost_directions[i] = 0
             # self.ghost_directions[i] = random.sample(self.non_block_directions(self.ghost_positions[i]), 1)[0]
             self.ghost_positions[i] = self.move_if_valid(self.ghost_positions[i], self.ghost_directions[i])
