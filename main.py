@@ -73,8 +73,8 @@ def save_logs_plot(logs, filename):
         log_freq = len(logs[i])
         absc = [1. / log_freq * i for i in range(log_freq)]
         ords = logs[i]
-        plt.plot(absc, ords, color=colors[i])
-        legend.append(mpatches.Patch(color=colors[i], label='Epoch {}'.format(i)))
+        plt.plot(absc, ords, color=colors[i%4])
+        legend.append(mpatches.Patch(color=colors[i % 4], label='Epoch {}'.format(i)))
         if i and not(i % 4):
             plt.legend(handles=legend)
             plt.savefig(filename + '{}.png'.format(n_files))
@@ -86,70 +86,16 @@ def save_logs_plot(logs, filename):
     plt.clf()
 
 
-env = PacManEnv('map1.txt', (4, 6), [(7, 1)], [2], "usual", 50)
+# env = PacManEnv('map3.txt', (4, 6), [(7, 1)], [2], "usual", 50)
+env = PacManEnv('map4.txt', (1, 1), [(13, 13)], [2], "usual", 150)
 # env = PacManEnv('map1.txt', (4, 6), [], [], "usual", 50)
 # env = PacManEnv('map2.txt', (3, 3), [], [], False, 8)
 # env = PacManEnv('map2.txt', (3, 3), [(1, 1)], [2], False, 20, 20)
 
-dqn = DQN(env, 500, [128])
-eps_schedule = [(1., 0.1, 0.8)] + [(0.35, 0.1, 0.1)]*3
-logs = dqn.train(eps_schedule, 0.99, 10000, 16, 100, 50, 50)
-save_logs_plot(logs, 'NN=128,T=10000,D=500,C=100,batch=16')
-
-dqn = DQN(env, 500, [128])
-eps_schedule = [(1., 0.1, 0.8)] + [(0.35, 0.1, 0.1)]*3
-logs = dqn.train(eps_schedule, 0.99, 10000, 16, 500, 50, 50)
-save_logs_plot(logs, 'NN=128,T=10000,D=500,C=500,batch=16')
-
-dqn = DQN(env, 500, [128])
-eps_schedule = [(1., 0.1, 0.8)] + [(0.35, 0.1, 0.1)]*3
-logs = dqn.train(eps_schedule, 0.99, 10000, 16, 1000, 50, 50)
-save_logs_plot(logs, 'NN=128,T=10000,D=500,C=1000,batch=16')
-
-dqn = DQN(env, 1000, [128])
-eps_schedule = [(1., 0.1, 0.8)] + [(0.35, 0.1, 0.1)]*3
-logs = dqn.train(eps_schedule, 0.99, 10000, 16, 500, 50, 50)
-save_logs_plot(logs, 'NN=128,T=10000,D=1000,C=500,batch=16')
-
-dqn = DQN(env, 100, [128])
-eps_schedule = [(1., 0.1, 0.8)] + [(0.35, 0.1, 0.1)]*3
-logs = dqn.train(eps_schedule, 0.99, 10000, 16, 500, 50, 50)
-save_logs_plot(logs, 'NN=128,T=10000,D=100,C=500,batch=16')
-
-dqn = DQN(env, 500, [32])
-eps_schedule = [(1., 0.1, 0.8)] + [(0.35, 0.1, 0.1)]*3
-logs = dqn.train(eps_schedule, 0.99, 10000, 16, 100, 50, 50)
-save_logs_plot(logs, 'NN=32,T=10000,D=500,C=100,batch=16')
-
-dqn = DQN(env, 500, [32,32])
-eps_schedule = [(1., 0.1, 0.8)] + [(0.35, 0.1, 0.1)]*3
-logs = dqn.train(eps_schedule, 0.99, 10000, 16, 100, 50, 50)
-save_logs_plot(logs, 'NN=32,32, T=10000,D=500,C=100,batch=16')
-
-dqn = DQN(env, 500, [128])
-eps_schedule = [(1., 0.1, 0.8)] + [(1.0, 0.1, 0.8)]*3
-logs = dqn.train(eps_schedule, 0.99, 10000, 16, 100, 50, 50)
-save_logs_plot(logs, 'NN=128,T=10000,D=500,C=100,batch=16, all schedules same')
-
-dqn = DQN(env, 500, [128])
-eps_schedule = [(1., 0.1, 0.8)] + [(1.0, 0.1, 0.1)]*3
-logs = dqn.train(eps_schedule, 0.99, 10000, 16, 100, 50, 50)
-save_logs_plot(logs, 'NN=128,T=10000,D=500,C=100,batch=16, schedule spike after 1.0 - 0.1 -0.1')
-
-dqn = DQN(env, 500, [128])
-eps_schedule = [(1., 0.1, 0.8)] + [(0.2, 0.1, 0.1)]*3
-logs = dqn.train(eps_schedule, 0.99, 10000, 16, 100, 50, 50)
-save_logs_plot(logs, 'NN=128,T=10000,D=500,C=100,batch=16, schedule spike after 0.2 - 0.1 -0.1')
-
-dqn = DQN(env, 500, [128])
-eps_schedule = [(1., 0.1, 0.8)] + [(0.4, 0.1, 0.1)]*3
-logs = dqn.train(eps_schedule, 0.99, 10000, 16, 100, 50, 50)
-save_logs_plot(logs, 'NN=128,T=10000,D=500,C=100,batch=16, schedule spike after 0.4 - 0.1 -0.1')
-
-dqn = DQN(env, 500, [128])
-eps_schedule = [(1., 0.1, 0.8)] + [(0.1, 0.1, 0.)]*3
-logs = dqn.train(eps_schedule, 0.99, 10000, 16, 100, 50, 50)
-save_logs_plot(logs, 'NN=128,T=10000,D=500,C=100,batch=16, schedule constant after 0.1')
+dqn = DQN(env, 5000, [64,64])
+eps_schedule = [(1., 0.1, 0.8)] + [(0.2, 0.1, 0.1)]*9
+logs = dqn.train(eps_schedule, 0.99, 100000, 32, 1000, 150, 20, 'second.h5')
+save_logs_plot(logs, 'second')
 
 #dqn.observe(5)
 

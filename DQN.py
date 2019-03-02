@@ -106,7 +106,7 @@ class DQN:
             self.eps = eps_init * (1- t/Tf) + eps_final*(t/Tf)
 
     # Train for several epochs
-    def train(self, eps_schedule, gamma, T, mini_batch_size, C, max_t, log_freq):
+    def train(self, eps_schedule, gamma, T, mini_batch_size, C, max_t, log_freq, save_file=None):
         logs = []
         epochs = len(eps_schedule)
         for i in range(epochs):
@@ -114,6 +114,8 @@ class DQN:
             print()
             eps_init, eps_final, eps_prop = eps_schedule[i]
             logs.append(self.train_epoch(gamma, eps_init, eps_final, eps_prop, T, mini_batch_size, C, max_t, log_freq))
+            if save_file is not None:
+                self.save(save_file)
         return logs
 
     # Train for one epoch, max_t is the max duration of an episode

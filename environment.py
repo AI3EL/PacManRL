@@ -16,8 +16,11 @@ WINDOW_SHAPE = 500, 500
 WALL_COLOR = (0, 0, 0)
 VOID_COLOR = (255,255,255)
 SB_COLOR = (255,255,0)
+BB_COLOR = SB_COLOR
 GHOST_COLOR = (255, 0, 0)
 PACMAN_COLOR = (0, 0, 255)
+SUPER_PACMAN_COLOR = (0, 255, 0)
+SUPER_TIMEOUT = 40
 MOVE_TIME = 150
 
 # if setting state to "vector10", new and more simple state representation:
@@ -51,6 +54,8 @@ class PacManEnv:
         self.pac_position = pac_position
         self.ghost_positions = ghost_positions
         self.ghost_directions = ghost_directions
+        self.super_mode = False
+        self.super_timeout = 0
         self.state_rpz = state
         self.time = 0
         self.time_out = time_out
@@ -144,30 +149,57 @@ class PacManEnv:
 
     # Returns : observation, reward, done, info
     def step(self, action):
-        self.pac_position = self.move_if_valid(self.pac_position, action)
         reward = 0
+
+        # Decrease super_mode timeout
+        if self.super_mode:
+            self.super_timeout -= 1
+            if self.super_timeout <= 0:
+                self.super_mode = False
+
+        # Move pacman
+        self.pac_position = self.move_if_valid(self.pac_position, action)
 
         # Has to check before and after ghost position change
         for i in range(len(self.ghost_positions)):
             if self.ghost_positions[i] == self.pac_position:
-                observation = self.get_observation()
-                return observation, self.death_cost, True, 'Failure'
+                if self.super_mode:
+                    self.ghost_positions[i] = (-1, -1)
+                    self.ghost_directions[i] = -1
+                    reward += 10
+                else:
+                    observation = self.get_observation()
+                    return observation, -self.death_cost, True, 'Failure'
 
-            # WARNING : special mode, ghost only goes up and down
-            if self.ghost_positions[i] == (7, 1):
-                self.ghost_directions[i] = 2
-            elif self.ghost_positions[i] == (7, 7):
-                self.ghost_directions[i] = 0
-            # self.ghost_directions[i] = random.sample(self.non_block_directions(self.ghost_positions[i]), 1)[0]
-            self.ghost_positions[i] = self.move_if_valid(self.ghost_positions[i], self.ghost_directions[i])
+            # Move if not dead
+            if self.ghost_positions[i] != (-1, -1):
+                if self.super_mode:
+                    if self.time % 4 == 0:
+                        self.ghost_directions[i] = random.sample(self.non_block_directions(self.ghost_positions[i]), 1)[0]
+                        self.ghost_positions[i] = self.move_if_valid(self.ghost_positions[i], self.ghost_directions[i])
+                else:
+                    if self.time % 2:
+                        self.ghost_directions[i] = random.sample(self.non_block_directions(self.ghost_positions[i]), 1)[0]
+                        self.ghost_positions[i] = self.move_if_valid(self.ghost_positions[i], self.ghost_directions[i])
 
             if self.ghost_positions[i] == self.pac_position:
-                observation = self.get_observation()
-                return observation, self.death_cost, True, 'Failure'
+                if self.super_mode:
+                    self.ghost_positions[i] = (-1, -1)
+                    self.ghost_directions[i] = -1
+                    reward += 10
+                else:
+                    observation = self.get_observation()
+                    return observation, -self.death_cost, True, 'Failure'
 
         if self.map[self.pac_position] == 2:
             self.map[self.pac_position] = 0
-            reward = 1
+            reward += 1
+
+        elif self.map[self.pac_position] == 3:
+            self.map[self.pac_position] = 0
+            reward += 5
+            self.super_mode = True
+            self.super_timeout = SUPER_TIMEOUT
 
         if self.time >= self.time_out:
             return self.get_observation(), reward, True, 'Failure'
@@ -186,15 +218,22 @@ class PacManEnv:
             if self.map[i, j] == 1:
                 color = WALL_COLOR
             elif self.map[i, j] == 2:
-                off_set = (px[0] / 4, px[1] / 4)
-                size = (px[0] / 2, px[1] / 2)
+                off_set = (px[0]*0.35, px[1]*0.35)
+                size = (px[0]*0.3, px[1]*0.3)
                 color = SB_COLOR
             elif self.map[i, j] == 3:
-                color = SB_COLOR
+                off_set = (px[0] * 0.2, px[1] * 0.2)
+                size = (px[0] * 0.6, px[1] * 0.6)
+                color = BB_COLOR
             pygame.draw.rect(self.window, color, Rect([px[0] * i + off_set[0], px[1] * j + off_set[1]], size))
         for pos in self.ghost_positions:
             pygame.draw.rect(self.window, GHOST_COLOR, Rect([px[0] * pos[0], px[1] * pos[1]], px))
-        pygame.draw.rect(self.window, PACMAN_COLOR, Rect([px[0] * self.pac_position[0], px[1] * self.pac_position[1]], px))
+        if self.super_mode:
+            pygame.draw.rect(self.window, SUPER_PACMAN_COLOR,
+                             Rect([px[0] * self.pac_position[0], px[1] * self.pac_position[1]], px))
+        else:
+            pygame.draw.rect(self.window, PACMAN_COLOR,
+                             Rect([px[0] * self.pac_position[0], px[1] * self.pac_position[1]], px))
         pygame.display.update()
         pygame.time.wait(MOVE_TIME)
 
@@ -204,4 +243,5 @@ class PacManEnv:
         self.ghost_positions = self.init_ghost_positions.copy()
         self.ghost_directions = self.init_ghost_directions.copy()
         self.time = 0
+        self.super_mode = False
         return self.get_observation()
