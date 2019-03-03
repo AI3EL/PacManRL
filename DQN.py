@@ -2,7 +2,7 @@ import numpy as np
 import random
 import keras
 from keras.models import Sequential
-from keras.layers import Dense
+from keras.layers import Dense, Flatten
 from utils import to_array
 import copy
 
@@ -14,8 +14,8 @@ import copy
 class DQN:
     def __init__(self, env, buffer_size, neurons):
         self.env = env
-        self.QNN = self.build_QNN(env.observation_dim, neurons)  # Q network
-        self.TNN = self.build_QNN(env.observation_dim, neurons)  # Target network
+        self.QNN = self.build_QNN(env.map.shape, neurons)  # Q network
+        self.TNN = self.build_QNN(env.map.shape, neurons)  # Target network
         self.D = []  # Pool containing experiences
         self.D_size = buffer_size
         self.eps = None
@@ -39,12 +39,10 @@ class DQN:
         self.TNN.load_weights(file_name)
 
     @staticmethod
-    def build_QNN(input_dim, neurons):
+    def build_QNN(map_shape, neurons):
         model = Sequential()
+        model.add(Flatten(input_shape=map_shape))
         for i, neuron in enumerate(neurons):
-            if not i:
-                model.add(Dense(neuron, input_dim=input_dim, activation='relu', name='hidden{}'.format(i+1)))
-            else:
                 model.add(Dense(neuron, activation='relu', name='hidden{}'.format(i+1)))
         model.add(Dense(4, activation='softmax', name='final'))
         model.compile(
@@ -64,7 +62,7 @@ class DQN:
             if random.random() < self.eps:
                 action = random.randint(0, self.env.action_size - 1)
             else:
-                action = np.argmax(self.QNN.predict(to_array([self.cur_observation]), batch_size=1))
+                action = np.argmax(self.QNN.predict(np.array([self.cur_observation]), batch_size=1))
             next_observation, reward, done, info = self.env.step(action)
             self.cur_score += reward
             count += 1
@@ -88,19 +86,19 @@ class DQN:
         for i in range(len(batch)):
             # TODO : not optimal but simpler with keras :
             # TODO : just change one element of array tmp so that the error is on only one term of the resulting array
-            tmp = self.QNN.predict(to_array([batch[i][0]]))[0]
+            tmp = self.QNN.predict(np.array([batch[i][0]]))[0]
             if batch[i][3] is None:
                 tmp[batch[i][1]] = batch[i][2]
             else:
-                tmp[batch[i][1]] = batch[i][2] + gamma * max(self.TNN.predict(to_array([batch[i][3]]))[0])
+                tmp[batch[i][1]] = batch[i][2] + gamma * max(self.TNN.predict(np.array([batch[i][3]]))[0])
             y_train.append(tmp)
-        x_train = to_array([b[0] for b in batch])
+        x_train = [b[0] for b in batch]
         return np.array(x_train), np.array(y_train)
 
     # Linearly from eps_init to eps_final for t in [0, T/2], then constant to eps_final
     def udpate_eps(self, eps_init, eps_final, eps_prop, t, T):
         Tf = eps_prop*T
-        if t > Tf:
+        if t >= Tf:
             self.eps = eps_final
         else:
             self.eps = eps_init * (1- t/Tf) + eps_final*(t/Tf)
@@ -157,7 +155,7 @@ class DQN:
                 if random.random() < eps:
                     action = random.randint(0, self.env.action_size-1)
                 else:
-                    probas = self.QNN.predict(to_array([observation]))[0]
+                    probas = self.QNN.predict(np.array([observation]))[0]
                     action = np.argmax(probas)
                 observation, reward, done, info = self.env.step(action)
                 if done:

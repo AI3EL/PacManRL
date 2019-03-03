@@ -1,15 +1,4 @@
 import itertools
-import numpy as np
-
-
-# To comply with keras format : flatten and transform in np.array
-def to_array(observations):
-    # high_dim
-    lst = []
-    for observation in observations:
-        lst.append(vectorize(observation))
-    return np.array(lst)
-
 
 def vectorize(observation):
     if len(observation) == 3:

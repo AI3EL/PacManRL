@@ -121,7 +121,14 @@ class PacManEnv:
             return self.pac_position, self.ghost_positions
 
         elif(self.state_rpz=="usual"):
-            return self.map, self.pac_position, self.ghost_positions
+            observation = self.map.copy()
+            if self.super_mode:
+                observation[self.pac_position] = 5
+            else:
+                observation[self.pac_position] = 4
+            for ghos_pos in self.ghost_positions:
+                observation[ghos_pos] = 6
+            return observation
 
         elif(self.state_rpz=="vector10"):
             # build and return observation vector of length 10
