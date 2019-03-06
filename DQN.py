@@ -17,6 +17,7 @@ class DQN:
         self.is_conv = False  # To adapt format
         self.env = env
         self.QNN = self.build_QNN(neurons)  # Q network
+        print('Network sturcutre :')
         self.QNN.summary()
         self.TNN = self.build_QNN(neurons)  # Target network
         self.D = []  # Pool containing experiences
@@ -35,12 +36,12 @@ class DQN:
 
     # Only saves NN weights but could also save other things : D, logs, ...
     def save(self, file_name):
-        self.QNN.save(file_name + '.h5')
-        self.TNN.save(file_name + 'T.h5')
+        self.QNN.save('models/' + file_name + '.h5')
+        self.TNN.save('models/' + file_name + 'T.h5')
 
     def load(self, file_name):
-        self.QNN = load_model(file_name + '.h5')
-        self.TNN = load_model(file_name + 'T.h5')
+        self.QNN = load_model('models/' + file_name + '.h5')
+        self.TNN = load_model('models/' + file_name + 'T.h5')
 
     def build_QNN(self, neurons):
         model = Sequential()
