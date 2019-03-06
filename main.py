@@ -75,7 +75,7 @@ def save_logs_plot(logs, filename):
         ords = logs[i]
         plt.plot(absc, ords, color=colors[i%4])
         legend.append(mpatches.Patch(color=colors[i % 4], label='Epoch {}'.format(i)))
-        if i and not(i % 4):
+        if (i % 3) == 2:
             plt.legend(handles=legend)
             plt.savefig(filename + '{}.png'.format(n_files))
             legend = []
@@ -87,17 +87,19 @@ def save_logs_plot(logs, filename):
 
 
 # env = PacManEnv('map3.txt', (4, 6), [(7, 1)], [2], "usual", 50)
-env = PacManEnv('map4.txt', (1, 1), [(13, 13)], [2], "usual", 200)
-# env = PacManEnv('map1.txt', (4, 6), [], [], "usual", 50)
+env = PacManEnv('real_map.txt', (20,13), [(14,13)], [3], "usual", 500)
+# env = PacManEnv('map1.txt', (4, 6), [(1,1)], [2], "usual", 50, 1)
 # env = PacManEnv('map2.txt', (3, 3), [], [], False, 8)
-# env = PacManEnv('map2.txt', (3, 3), [(1, 1)], [2], False, 20, 20)
-
-dqn = DQN(env, 500, [128])
-eps_schedule = [(1., 0.3, 1.0)]*3
-logs = dqn.train(eps_schedule, 0.99, 10000, 16, 1000, 200, 20, 'third.h5')
-save_logs_plot(logs, 'third')
-#dqn.load('third.h5')
-#dqn.observe(5)
+# env = PacManEnv('map2.txt', (3, 3), [], [], "usual", 7)
+# env = PacManEnv('map5.txt', (12,6), [], [], "usual", 50)
+neurons = {'conv': [8], 'dense': [32]}
+dqn = DQN(env, 500, neurons)
+dqn.observe(2, 0.2)
+dqn.observe(2, 0.1)
+dqn.observe(2, 0)
+eps_schedule = [(0.3, 0.1, 1.0)]*10
+logs = dqn.train(eps_schedule, 0.99, 10000, 16, 1000, 500, 50, 'hard_conv2')
+save_logs_plot(logs, 'hard_conv2')
 
 # print("Final qtable : ")
 # for k,v in dqn.get_q_table().items():

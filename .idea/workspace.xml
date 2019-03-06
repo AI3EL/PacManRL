@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4dc68f74-929b-40a1-aedf-b7e10c6ec471" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/map5.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/real_map.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DQN.py" beforeDir="false" afterPath="$PROJECT_DIR$/DQN.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/environment.py" beforeDir="false" afterPath="$PROJECT_DIR$/environment.py" afterDir="false" />
@@ -16,11 +18,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="333">
-              <caret line="98" column="18" selection-start-line="98" selection-start-column="18" selection-end-line="98" selection-end-column="18" />
+            <state relative-caret-position="438">
+              <caret line="89" column="49" selection-start-line="89" selection-start-column="49" selection-end-line="89" selection-end-column="49" />
               <folding>
                 <element signature="e#0#33#0" expanded="true" />
               </folding>
@@ -28,41 +30,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DQN.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/DQN.py">
+      <file leaf-file-name="real_map.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/real_map.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="891">
-              <caret line="157" column="55" selection-start-line="157" selection-start-column="55" selection-end-line="157" selection-end-column="55" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="15">
+              <caret line="1" column="6" selection-start-line="1" selection-start-column="6" selection-end-line="1" selection-end-column="6" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="training_utils.py" pinned="false" current-in-tab="false">
-        <entry file="file:///usr/local/lib/python3.5/dist-packages/keras/engine/training_utils.py">
+      <file leaf-file-name="map5.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/map5.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="196">
-              <caret line="127" selection-start-line="127" selection-end-line="127" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="training.py" pinned="false" current-in-tab="false">
-        <entry file="file:///usr/local/lib/python3.5/dist-packages/keras/engine/training.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="196">
-              <caret line="1148" selection-start-line="1148" selection-end-line="1148" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="base_layer.py" pinned="false" current-in-tab="false">
-        <entry file="file:///usr/local/lib/python3.5/dist-packages/keras/engine/base_layer.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="196">
-              <caret line="127" selection-start-line="127" selection-end-line="127" />
+            <state relative-caret-position="330">
+              <caret line="22" selection-start-line="22" selection-end-line="22" />
             </state>
           </provider>
         </entry>
@@ -70,47 +51,29 @@
       <file leaf-file-name="map1.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/map1.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret selection-end-line="9" selection-end-column="9" />
+            <state relative-caret-position="30">
+              <caret line="2" column="2" selection-start-line="2" selection-start-column="2" selection-end-line="2" selection-end-column="2" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="map3.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/map3.txt">
+      <file leaf-file-name="DQN.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/DQN.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="9" column="9" selection-start-line="9" selection-start-column="9" selection-end-line="9" selection-end-column="9" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="map4.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/map4.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="13" column="8" selection-start-line="13" selection-start-column="8" selection-end-line="13" selection-end-column="8" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="utils.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/utils.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="9" selection-start-line="9" selection-end-line="9" />
+            <state relative-caret-position="461">
+              <caret line="144" column="24" selection-start-line="144" selection-start-column="24" selection-end-line="144" selection-end-column="24" />
               <folding>
-                <element signature="e#0#16#0" expanded="true" />
+                <element signature="e#0#18#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="environment.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="environment.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/environment.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="126" column="17" lean-forward="true" selection-start-line="126" selection-end-line="127" />
+            <state relative-caret-position="364">
+              <caret line="227" column="38" selection-start-line="227" selection-start-column="38" selection-end-line="227" selection-end-column="38" />
               <folding>
                 <element signature="e#85#103#0" expanded="true" />
               </folding>
@@ -135,7 +98,6 @@
       <find>observation</find>
       <find>time_alive</find>
       <find>to_array</find>
-      <find>print</find>
       <find>self.map</find>
       <find>log_freq</find>
       <find>n_train_episodes</find>
@@ -147,6 +109,13 @@
       <find>self.time</find>
       <find>u</find>
       <find>next_observation</find>
+      <find>get_obs</find>
+      <find>update_eps</find>
+      <find>predict</find>
+      <find>train</find>
+      <find>train_on_batch</find>
+      <find>is_conv</find>
+      <find>print</find>
     </findStrings>
     <replaceStrings>
       <replace>self.window</replace>
@@ -170,15 +139,18 @@
         <option value="$PROJECT_DIR$/reinforce.py" />
         <option value="$PROJECT_DIR$/map3.txt" />
         <option value="$PROJECT_DIR$/map4.txt" />
-        <option value="$PROJECT_DIR$/environment.py" />
         <option value="$PROJECT_DIR$/utils.py" />
+        <option value="$PROJECT_DIR$/map6.txt" />
         <option value="$PROJECT_DIR$/DQN.py" />
+        <option value="$PROJECT_DIR$/map5.txt" />
+        <option value="$PROJECT_DIR$/real_map.txt" />
         <option value="$PROJECT_DIR$/main.py" />
+        <option value="$PROJECT_DIR$/environment.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="4">
-    <option name="x" value="65" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="992" />
     <option name="y" value="24" />
     <option name="width" value="928" />
     <option name="height" value="1056" />
@@ -189,7 +161,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -201,11 +172,12 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="SearchEverywhereHistoryKey" value="observation_shape&#9;null&#9;null" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../INF574 GeometricModeling/Projet/Code" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunDashboard">
@@ -376,7 +348,14 @@
       <option name="project" value="LOCAL" />
       <updated>1551494692357</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Changed raw observation to just matrix : 4 is pacman, 5 is super pacman, 6 is a ghost.">
+      <created>1551649011838</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1551649011838</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TodoView">
@@ -389,19 +368,19 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="24" width="928" height="1056" extended-state="4" />
+    <frame x="992" y="24" width="928" height="1056" extended-state="4" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.50276244" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.22872928" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.32948583" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" weight="0.32984293" />
       <window_info anchor="bottom" id="Version Control" order="7" weight="0.32948583" />
       <window_info anchor="bottom" id="Python Console" order="7" weight="0.32948583" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.33837837" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49944752" weight="0.412973" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Terminal" order="7" />
+      <window_info anchor="bottom" id="Terminal" order="7" sideWeight="0.5005525" side_tool="true" weight="0.412973" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39979014" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.39891893" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -471,7 +450,8 @@
     <MESSAGE value="Added statistics, plot, save, load" />
     <MESSAGE value="Minor changes" />
     <MESSAGE value="Added big balls" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added big balls" />
+    <MESSAGE value="Changed raw observation to just matrix : 4 is pacman, 5 is super pacman, 6 is a ghost." />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed raw observation to just matrix : 4 is pacman, 5 is super pacman, 6 is a ghost." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -479,11 +459,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/ideas.md" />
-    <entry file="file://$PROJECT_DIR$/monopoly.py" />
-    <entry file="file://$PROJECT_DIR$/ideas.md" />
-    <entry file="file://$PROJECT_DIR$/monopoly.py" />
-    <entry file="file://$PROJECT_DIR$/ideas.md" />
     <entry file="file://$PROJECT_DIR$/main.py" />
     <entry file="file://$PROJECT_DIR$/main.py" />
     <entry file="file://$PROJECT_DIR$/main.py" />
@@ -636,6 +611,12 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/logshello1.png" />
+    <entry file="file://$PROJECT_DIR$/logshello0.png" />
+    <entry file="file://$PROJECT_DIR$/second1.png" />
+    <entry file="file://$PROJECT_DIR$/second2.png" />
+    <entry file="file://$PROJECT_DIR$/second0.png" />
+    <entry file="file://$PROJECT_DIR$/map6.txt" />
     <entry file="file://$PROJECT_DIR$/map4.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
@@ -643,81 +624,95 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/logshello1.png" />
-    <entry file="file://$PROJECT_DIR$/logshello0.png" />
-    <entry file="file://$PROJECT_DIR$/second1.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/second2.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/second0.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/environment.py">
+    <entry file="file:///usr/local/lib/python3.5/dist-packages/keras/engine/sequential.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="126" column="17" lean-forward="true" selection-start-line="126" selection-end-line="127" />
-          <folding>
-            <element signature="e#85#103#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="163">
+          <caret line="164" selection-start-line="164" selection-end-line="164" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/map1.txt">
-      <provider selected="true" editor-type-id="text-editor">
+    <entry file="file://$PROJECT_DIR$/../../../ML2/deep_learning_2019.ipynb">
+      <provider selected="true" editor-type-id="ipnb-editor">
         <state>
-          <caret selection-end-line="9" selection-end-column="9" />
+          <selected id="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/local/lib/python3.5/dist-packages/keras/engine/training_utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="163">
+          <caret line="127" selection-start-line="127" selection-end-line="127" />
         </state>
       </provider>
     </entry>
     <entry file="file:///usr/local/lib/python3.5/dist-packages/keras/engine/base_layer.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
+        <state relative-caret-position="173">
           <caret line="127" selection-start-line="127" selection-end-line="127" />
         </state>
       </provider>
     </entry>
     <entry file="file:///usr/local/lib/python3.5/dist-packages/keras/engine/training.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
+        <state relative-caret-position="163">
           <caret line="1148" selection-start-line="1148" selection-end-line="1148" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/local/lib/python3.5/dist-packages/keras/engine/training_utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="127" selection-start-line="127" selection-end-line="127" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" selection-start-line="9" selection-end-line="9" />
-          <folding>
-            <element signature="e#0#16#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="105">
+          <caret line="7" column="40" selection-start-line="7" selection-start-column="40" selection-end-line="7" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/map5.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="22" selection-start-line="22" selection-end-line="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/real_map.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="6" selection-start-line="1" selection-start-column="6" selection-end-line="1" selection-end-column="6" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/DQN.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="891">
-          <caret line="157" column="55" selection-start-line="157" selection-start-column="55" selection-end-line="157" selection-end-column="55" />
+        <state relative-caret-position="461">
+          <caret line="144" column="24" selection-start-line="144" selection-start-column="24" selection-end-line="144" selection-end-column="24" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/map1.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="2" selection-start-line="2" selection-start-column="2" selection-end-line="2" selection-end-column="2" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="333">
-          <caret line="98" column="18" selection-start-line="98" selection-start-column="18" selection-end-line="98" selection-end-column="18" />
+        <state relative-caret-position="438">
+          <caret line="89" column="49" selection-start-line="89" selection-start-column="49" selection-end-line="89" selection-end-column="49" />
           <folding>
             <element signature="e#0#33#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/environment.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="364">
+          <caret line="227" column="38" selection-start-line="227" selection-start-column="38" selection-end-line="227" selection-end-column="38" />
+          <folding>
+            <element signature="e#85#103#0" expanded="true" />
           </folding>
         </state>
       </provider>

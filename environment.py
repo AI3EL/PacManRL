@@ -21,7 +21,7 @@ GHOST_COLOR = (255, 0, 0)
 PACMAN_COLOR = (0, 0, 255)
 SUPER_PACMAN_COLOR = (0, 255, 0)
 SUPER_TIMEOUT = 40
-MOVE_TIME = 150
+MOVE_TIME = 30
 
 # if setting state to "vector10", new and more simple state representation:
 # Observation is a vector of shape 10:

@@ -1,9 +1,8 @@
 import numpy as np
 import random
 import keras
-from keras.models import Sequential
-from keras.layers import Dense, Flatten
-from utils import to_array
+from keras.models import Sequential, load_model
+from keras.layers import Dense, Flatten, Conv2D
 import copy
 
 
@@ -11,17 +10,21 @@ import copy
 # batch_size : 32
 # D_size : 10^6
 # C : 10^4
+# TODO : ideally, every prediction of map has same value for each action at the birth of NN
+# TODO : adaptative epsilon
 class DQN:
     def __init__(self, env, buffer_size, neurons):
+        self.is_conv = False  # To adapt format
         self.env = env
-        self.QNN = self.build_QNN(env.map.shape, neurons)  # Q network
-        self.TNN = self.build_QNN(env.map.shape, neurons)  # Target network
+        self.QNN = self.build_QNN(neurons)  # Q network
+        self.QNN.summary()
+        self.TNN = self.build_QNN(neurons)  # Target network
         self.D = []  # Pool containing experiences
         self.D_size = buffer_size
         self.eps = None
 
         # Variables used to recall the environment state when filling D
-        self.cur_observation = None
+        self.cur_observation = self.env.reset()
         self.time_alive = 0
 
         # Log variables
@@ -32,18 +35,31 @@ class DQN:
 
     # Only saves NN weights but could also save other things : D, logs, ...
     def save(self, file_name):
-        self.QNN.save_weights(file_name)
+        self.QNN.save(file_name + '.h5')
+        self.TNN.save(file_name + 'T.h5')
 
     def load(self, file_name):
-        self.QNN.load_weights(file_name)
-        self.TNN.load_weights(file_name)
+        self.QNN = load_model(file_name + '.h5')
+        self.TNN = load_model(file_name + 'T.h5')
 
-    @staticmethod
-    def build_QNN(map_shape, neurons):
+    def build_QNN(self, neurons):
         model = Sequential()
-        model.add(Flatten(input_shape=map_shape))
-        for i, neuron in enumerate(neurons):
-                model.add(Dense(neuron, activation='relu', name='hidden{}'.format(i+1)))
+        first = True
+        shape = self.env.map.shape
+        if 'conv' in neurons:
+            self.is_conv = True
+            for n in neurons['conv']:
+                if first:
+                    model.add(Conv2D(n, 3, input_shape=(shape[0], shape[1], 1), activation="relu"))
+                    first = False
+                else:
+                    model.add(Conv2D(n, 3, activation="relu"))
+            model.add(Flatten())
+        else:
+            model.add(Flatten(input_shape=shape))
+        if 'dense' in neurons:
+            for n in neurons['dense']:
+                    model.add(Dense(n, activation='relu'))
         model.add(Dense(4, activation='softmax', name='final'))
         model.compile(
             loss='mean_squared_error',
@@ -55,6 +71,12 @@ class DQN:
     def get_batch(self, size):
         return [self.D.pop(random.randint(0, len(self.D)-1)) for i in range(size)]  # TODO : optimize
 
+    def observations_to_keras(self, observations):
+        if self.is_conv:
+            return np.array(observations).reshape((len(observations), self.env.map.shape[0], self.env.map.shape[1],1))
+        else:
+            return np.array(observations)
+
     def fill_D(self, n, max_t):
         count = 0
         while len(self.D) < self.D_size and count < n:
@@ -62,7 +84,7 @@ class DQN:
             if random.random() < self.eps:
                 action = random.randint(0, self.env.action_size - 1)
             else:
-                action = np.argmax(self.QNN.predict(np.array([self.cur_observation]), batch_size=1))
+                action = np.argmax(self.QNN.predict(self.observations_to_keras([self.cur_observation]), batch_size=1))
             next_observation, reward, done, info = self.env.step(action)
             self.cur_score += reward
             count += 1
@@ -86,14 +108,14 @@ class DQN:
         for i in range(len(batch)):
             # TODO : not optimal but simpler with keras :
             # TODO : just change one element of array tmp so that the error is on only one term of the resulting array
-            tmp = self.QNN.predict(np.array([batch[i][0]]))[0]
+            tmp = self.QNN.predict(self.observations_to_keras([batch[i][0]]))[0]
             if batch[i][3] is None:
                 tmp[batch[i][1]] = batch[i][2]
             else:
-                tmp[batch[i][1]] = batch[i][2] + gamma * max(self.TNN.predict(np.array([batch[i][3]]))[0])
+                tmp[batch[i][1]] = batch[i][2] + gamma * max(self.TNN.predict(self.observations_to_keras([batch[i][3]]))[0])
             y_train.append(tmp)
         x_train = [b[0] for b in batch]
-        return np.array(x_train), np.array(y_train)
+        return self.observations_to_keras(x_train), np.array(y_train)
 
     # Linearly from eps_init to eps_final for t in [0, T/2], then constant to eps_final
     def udpate_eps(self, eps_init, eps_final, eps_prop, t, T):
@@ -120,7 +142,6 @@ class DQN:
     def train_epoch(self, gamma, eps_init, eps_final, eps_prop, T, batch_size, C, max_t, log_freq):
         print('Training DQN for T={}, C={}, batch_size={}'.format(T, C, batch_size))
         # last_q_table = self.get_q_table()
-        self.cur_observation = self.env.reset()
         average_loss = 0
         self.eps = eps_init
         logs = []
@@ -155,20 +176,15 @@ class DQN:
                 if random.random() < eps:
                     action = random.randint(0, self.env.action_size-1)
                 else:
-                    probas = self.QNN.predict(np.array([observation]))[0]
+                    probas = self.QNN.predict(self.observations_to_keras([observation]))[0]
                     action = np.argmax(probas)
                 observation, reward, done, info = self.env.step(action)
                 if done:
                     break
 
     # Outputs a dictionnary of the predictions of every possible position of pacman on the initial map
-    def get_q_table(self):
-        q_table = dict()
-        for i in range(len(self.env.init_map)):
-            for j in range(len(self.env.init_map[0])):
-                if self.env.init_map[i][j] == 0:
-                    q_table[(i, j)] = self.QNN.predict(to_array([(self.env.init_map, (i, j), [])]))[0]
-        return q_table
+    def get_q_table(self, map):
+        return self.QNN.predict(self.observations_to_keras([map]))[0]
 
     def log(self, percent):
         print('{}%'.format(int(percent * 100)))
