@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Feb 28 17:33:12 2019
-
-@author: jacqu
-"""
 
 import numpy as np
 import random

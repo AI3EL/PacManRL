@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Feb 28 18:26:23 2019
-
-@author: jacqu
-
-Useful functions to compute observations in the environment: 
+Useful functions to compute observations in the environment:
     - direction to closest target for pacman 
 """
 import numpy as np
